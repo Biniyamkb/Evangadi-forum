@@ -1,0 +1,39 @@
+import { Route, Routes, useNavigate } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { useEffect } from "react";
+import axios from "./axiosConfig";
+
+function App() {
+  localStorage.getItem("token")
+  const navigate = useNavigate();
+  async function checkUser() {
+    try {
+      await axios.get("/user/check", {
+        headers: {
+          Authorization: "Bearer" + token,
+        },
+      });
+    } catch (error) {
+      console.log(error.response.data);
+      navigate("/login");
+    }
+  }
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  return (
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
